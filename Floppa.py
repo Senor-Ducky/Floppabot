@@ -49,6 +49,132 @@ async def beg(ctx):
 	with open("bank.json", "w") as f:
 		json.dump(users,f)
 
+@client.command()
+async def withdraw(ctx, amount = None):
+	await open_account(ctx.author)
+
+	if amount == None:
+		await ctx.send("Please enter the amount to withdraw")
+		return
+
+	bal = await update_bank(ctx.author)
+
+	amount = int(amount)
+
+	if amount>bal[1]:
+		await ctx.send("Insuffecient Funds!")
+		return
+	if amount<0:
+		await ctx.send("Enter Positive amount retard")
+		return
+
+	await update_bank(ctx.author, amount)
+	await update_bank(ctx.author, -1*amount, "Floppa Republic Bank")
+	await ctx.send(f"you withdrew {amount} floppabucks.")
+
+@client.command()
+async def deposit(ctx, amount = None):
+	await open_account(ctx.author)
+
+	if amount == None:
+		await ctx.send("Please enter the amount to deposit")
+		return
+
+	bal = await update_bank(ctx.author)
+
+	amount = int(amount)
+
+	if amount>bal[0]:
+		await ctx.send("Insuffecient Funds!")
+		return
+	if amount<0:
+		await ctx.send("Enter Positive amount retard")
+		return
+
+	await update_bank(ctx.author, -1*amount)
+	await update_bank(ctx.author, amount, "Floppa Republic Bank")
+	await ctx.send(f"you deposit {amount} floppabucks.")
+
+@client.command()
+async def send(ctx, member:discord.Member,amount = None):
+	await open_account(ctx.author)
+	await open_account(member)
+
+	if amount == None:
+		await ctx.send("Please enter the amount to send")
+		return
+
+	bal = await update_bank(ctx.author)
+
+	amount = int(amount)
+
+	if amount>bal[1]:
+		await ctx.send("Insuffecient Funds!")
+		return
+	if amount<0:
+		await ctx.send("Enter Positive amount retard")
+		return
+
+	await update_bank(ctx.author, -1*amount, "Floppa Republic Bank")
+	await update_bank(member, amount, "Floppa Republic Bank")
+	await ctx.send(f"you sent {amount} floppabucks.")
+
+@client.command()
+async def rob(ctx, member:discord.Member,amount = None):
+	await open_account(ctx.author)
+	await open_account(member)
+
+	if amount == None:
+		await ctx.send("Please enter the amount to rob")
+		return
+
+	bal = await update_bank(member)
+
+	amount = int(amount)
+
+	if bal[0]<100:
+		await ctx.send(f"You can't rob {member}, they're too poor.")
+		return
+
+	earnings = random.randrange(0, bal[0])
+
+	await update_bank(ctx.author, earnings)
+	await update_bank(member, -1*earnings)
+	await ctx.send(f"you robbed {member} for {earnings} floppabucks.")
+	
+
+@client.command()
+async def slot(ctx, amount = None):
+	await open_account(ctx.author)
+
+	if amount == None:
+		await ctx.send("Please enter the amount to deposit")
+		return
+
+	bal = await update_bank(ctx.author)
+
+	amount = int(amount)
+
+	if amount>bal[0]:
+		await ctx.send("Insuffecient Funds!")
+		return
+	if amount<0:
+		await ctx.send("Enter Positive amount retard")
+		return
+
+	final = []
+	for i in range(3):
+		a = random.choice(["🎀", "🔮", "🏺", "💎", "💰"])
+		final.append(a)
+
+	await ctx.send(str(final))
+
+	if final[0] == final[1] or final[0] == final[2] or final[2] == final[1]:
+		await update_bank(ctx.author, 2*amount)
+		await ctx.send("Floppa has blessed you with fortune!")
+	else:
+		await update_bank(ctx.author, -1*amount)
+		await ctx.send("your flopping days are over")
 
 
 async def open_account(user):
@@ -71,7 +197,16 @@ async def get_bank_data():
 
 		return users
 
+async def update_bank(user, change=0, mode = "wallet"):
+	users = await get_bank_data()
+	users[str(user.id)][mode] += change
 
+	with open("bank.json", "w") as f:
+		json.dump(users,f)
+
+		bal = [users[str(user.id)]["wallet"], users[str(user.id)]["Floppa Republic Bank"]]
+
+	return bal
 
 
 
