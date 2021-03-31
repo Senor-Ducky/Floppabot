@@ -15,11 +15,11 @@ async def on_ready():
 	print("logged in")
 
 @client.command()
-async def load():
+async def load(ctx, extension):
 	client.load_extension(f"cogs.{extension}")
 
 @client.command():
-async def unload():
+async def unload(ctx, extension):
 	client.unload_extension(f"cogs.{extension}")
 
 for filename in os.listdir('./cogs'):
