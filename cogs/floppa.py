@@ -4,36 +4,7 @@ import os
 import json
 import random
 
-async def open_account(user):
 
-		users = await get_bank_data()
-
-		if str(user.id) in users:
-			return False 
-		else:
-			users[str(user.id)] = {}
-			users[str(user.id)]["wallet"] = 0
-			users[str(user.id)]["Floppa Republic Bank"] = 1000
-
-		with open("cogs/bank.json", "w") as f:
-			json.dump(users,f)
-
-async def get_bank_data():
-		with open("cogs/bank.json", "r") as f:
-			users = json.load(f)
-
-			return users
-
-async def update_bank(user, change=0, mode = "wallet"):
-		users = await get_bank_data()
-		users[str(user.id)][mode] += change
-
-		with open("cogs/bank.json", "w") as f:
-			json.dump(users,f)
-
-			bal = [users[str(user.id)]["wallet"], users[str(user.id)]["Floppa Republic Bank"]]
-
-		return bal
 
 class Economy(commands.Cog):
 	def __init__(self, client):
@@ -70,7 +41,7 @@ class Economy(commands.Cog):
 
 		users[str(user.id)]["wallet"] += earnings
 
-		with open("bank.json", "w") as f:
+		with open("cogs/bank.json", "w") as f:
 			json.dump(users,f)
 
 	@commands.command()
@@ -195,6 +166,36 @@ class Economy(commands.Cog):
 			await update_bank(ctx.author, -1*amount)
 			await ctx.send("your flopping days are over")
 
+async def open_account(user):
+
+		users = await get_bank_data()
+
+		if str(user.id) in users:
+			return False 
+		else:
+			users[str(user.id)] = {}
+			users[str(user.id)]["wallet"] = 0
+			users[str(user.id)]["Floppa Republic Bank"] = 1000
+
+		with open("cogs/bank.json", "w") as f:
+			json.dump(users,f)
+
+async def get_bank_data():
+		with open("cogs/bank.json", "r") as f:
+			users = json.load(f)
+
+			return users
+
+async def update_bank(user, change=0, mode = "wallet"):
+		users = await get_bank_data()
+		users[str(user.id)][mode] += change
+
+		with open("cogs/bank.json", "w") as f:
+			json.dump(users,f)
+
+			bal = [users[str(user.id)]["wallet"], users[str(user.id)]["Floppa Republic Bank"]]
+
+		return bal
 
 
 
