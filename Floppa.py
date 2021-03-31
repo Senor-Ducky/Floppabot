@@ -126,8 +126,6 @@ async def rob(ctx, member:discord.Member):
 
 	bal = await update_bank(member)
 
-	amount = int(amount)
-
 	if bal[0]<100:
 		await ctx.send(f"You can't rob {member}, they're too poor.")
 		return
