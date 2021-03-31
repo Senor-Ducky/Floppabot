@@ -1,11 +1,11 @@
 # Floppabot
 The Unofficial Floppa Discord bot
 
-##Prefix : flop!
+## Prefix : flop!
 
-##Commands:
+## Commands:
 
-###Economy:
+### Economy:
 ```
 beg
 deposit
