@@ -120,13 +120,9 @@ async def send(ctx, member:discord.Member,amount = None):
 	await ctx.send(f"you sent {amount} floppabucks.")
 
 @client.command()
-async def rob(ctx, member:discord.Member,amount = None):
+async def rob(ctx, member:discord.Member):
 	await open_account(ctx.author)
 	await open_account(member)
-
-	if amount == None:
-		await ctx.send("Please enter the amount to rob")
-		return
 
 	bal = await update_bank(member)
 
