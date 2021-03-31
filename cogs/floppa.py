@@ -166,7 +166,7 @@ class Economy(commands.Cog):
 			await ctx.send("your flopping days are over")
 
 
-	async def open_account(self, user):
+	async def open_account(user):
 
 		users = await get_bank_data()
 
@@ -180,13 +180,13 @@ class Economy(commands.Cog):
 		with open("bank.json", "w") as f:
 			json.dump(users,f)
 
-	async def get_bank_data(self):
+	async def get_bank_data():
 		with open("bank.json", "r") as f:
 			users = json.load(f)
 
 			return users
 
-	async def update_bank(self, user, change=0, mode = "wallet"):
+	async def update_bank(user, change=0, mode = "wallet"):
 		users = await get_bank_data()
 		users[str(user.id)][mode] += change
 
