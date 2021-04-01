@@ -28,6 +28,7 @@ class Economy(commands.Cog):
 		await ctx.send(embed = em)
 
 	@commands.command()
+	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def beg(self, ctx):
 		await open_account(ctx.author)
 
@@ -43,6 +44,12 @@ class Economy(commands.Cog):
 
 		with open("cogs/bank.json", "w") as f:
 			json.dump(users,f)
+
+	@beg.error
+	async def beg_error(self, ctx, error):
+	    if isinstance(error, commands.CommandOnCooldown):
+	        em = discord.Embed(title=f"Slow it down!",description=f"Try again in {error.retry_after:.2f}s.", color=discord.Color.purple())
+	        await ctx.send(embed=em)
 
 	@commands.command()
 	async def withdraw(self, ctx, amount = None):
@@ -115,6 +122,7 @@ class Economy(commands.Cog):
 		await ctx.send(f"you sent {amount} floppabucks.")
 
 	@commands.command()
+	@commands.cooldown(1, 30, commands.BucketType.user)
 	async def rob(self, ctx, member:discord.Member):
 		await open_account(ctx.author)
 		await open_account(member)
@@ -131,9 +139,16 @@ class Economy(commands.Cog):
 		await update_bank(ctx.author, earnings)
 		await update_bank(member, -1*earnings)
 		await ctx.send(f"you robbed {member} for {earnings} floppabucks.")
+
+	@rob.error
+	async def rob_error(self, ctx, error):
+	    if isinstance(error, commands.CommandOnCooldown):
+	        em = discord.Embed(title=f"Slow it down!",description=f"Try again in {error.retry_after:.2f}s.", color=discord.Color.purple())
+	        await ctx.send(embed=em)
 		
 
 	@commands.command()
+	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def slot(self, ctx, amount = None):
 		await open_account(ctx.author)
 
@@ -165,6 +180,12 @@ class Economy(commands.Cog):
 		else:
 			await update_bank(ctx.author, -1*amount)
 			await ctx.send("your flopping days are over")
+
+	@slot.error
+	async def slot_error(self, ctx, error):
+	    if isinstance(error, commands.CommandOnCooldown):
+	        em = discord.Embed(title=f"Slow it down!",description=f"Try again in {error.retry_after:.2f}s.", color=discord.Color.purple())
+	        await ctx.send(embed=em)
 
 async def open_account(user):
 
